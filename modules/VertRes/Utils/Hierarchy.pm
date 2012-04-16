@@ -575,10 +575,27 @@ sub get_lanes {
                 }
                 next unless $oks == $limits;
                 
-                push(@good_lanes, @{$library->lanes});
+                if (defined $args{lane}) {
+                  foreach my $lane (@{$library->lanes})
+                  {
+                    foreach my $lane_name (@{$args{lane}})
+                    {
+                      if($lane_name eq $lane->name)
+                      {
+                        push(@good_lanes, $lane);
+                      }
+                    }
+                  }
+                }
+                else
+                {
+                  push(@good_lanes, @{$library->lanes});
+                }
+                
             }
         }
     }
+
     
     if ($args{return_withdrawn}) {
         return @good_lanes;
