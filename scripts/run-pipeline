@@ -213,8 +213,10 @@ sub run_pipelines
 
         my $jobs = get_jobs($opts);
 
+        my $pm = new Parallel::ForkManager($$opts{num_processes});
         for my $job (@$jobs)
         {
+            $pm->start and next; # do the fork
             if ( $$opts{list} )
             {
                 my $info   = $job->get_info();
@@ -228,7 +230,9 @@ sub run_pipelines
 
             if ( $$opts{lsf_limit} && n_lsf_jobs($opts) > $$opts{lsf_limit} ) { last; }
             $job->run();
+            $pm->finish; # Terminates the child process
         }
+        $pm->wait_all_children;
     }
 }
 
@@ -319,8 +323,8 @@ sub get_jobs
     }
 
     open(my $fh,'<',$$opts{config}) or croak "$$opts{config}: $!";
-    my $pm = new Parallel::ForkManager($$opts{num_processes});
     
+    my $pm = new Parallel::ForkManager($$opts{num_processes});
     while (my $line=<$fh>)
     {
         $pm->start and next; # do the fork
