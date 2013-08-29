@@ -98,6 +98,7 @@ use VRTrack::Sample;
 use VertRes::Utils::Hierarchy;
 use VertRes::Utils::Math;
 use Utils;
+use Parallel::ForkManager;
 
 
 my $Error   = $VertRes::Pipeline::Error;
@@ -124,6 +125,7 @@ sub read_cmd_line_args
     $$opts{'sleep_time'} = 60;
     $$opts{'once'}       = 0;
     $$opts{'status_filter'} = '.*';
+    $$opts{'num_processes'} = 1;
 
     my $module;
     if ( !scalar @ARGV) { usage(); }
@@ -140,6 +142,7 @@ sub read_cmd_line_args
         if ( $arg eq '-o' || $arg eq '--once' ) { $$opts{'once'}=1; next; }
         if ( $arg eq '-v' || $arg eq '--verbose' ) { $$opts{'verbose'}++; next; }
         if ( $arg eq '-?' || $arg eq '-h' || $arg eq '--help' ) { usage(); }
+        if ( $arg eq '-p' || $arg eq '--num_processes' ) { $$opts{'num_processes'}=shift(@ARGV); next; }
         if ( -d $arg ) { $$opts{'dir'} = $arg; next; }
         usage("Unknown parameter \"$arg\". Run -h for help.\n");
     }
@@ -316,8 +319,11 @@ sub get_jobs
     }
 
     open(my $fh,'<',$$opts{config}) or croak "$$opts{config}: $!";
+    my $pm = new Parallel::ForkManager($$opts{num_processes});
+    
     while (my $line=<$fh>)
     {
+        $pm->start and next; # do the fork
         # Ignore comments and empty lines
         if ( $line=~/^\s*$/ ) { next }
         if ( $line=~/^\s*#/ ) { next }
@@ -451,7 +457,9 @@ sub get_jobs
         }
 
         croak("Could not parse the config file $$opts{config}: $line");
+        $pm->finish; # Terminates the child process
     }
+    $pm->wait_all_children;
     close($fh) or croak "$$opts{config}";
 
     return \@jobs;
