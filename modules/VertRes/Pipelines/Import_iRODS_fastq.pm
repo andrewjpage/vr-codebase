@@ -411,14 +411,14 @@ sub update_db
     for my $suffix (@bam_suffix)
     {
 	# Remove bams
-	Utils::CMD(qq[rm $lane_path/$$self{lane}$nonhuman.$suffix]);
+	    Utils::CMD(qq[rm $lane_path/$$self{lane}$nonhuman.$suffix]) if(-e qq[$lane_path/$$self{lane}$nonhuman.$suffix]);
     }
 
     for my $suffix (@fastq_suffix)
     {
 	# Remove fastqs
-	Utils::CMD(qq[rm $lane_path/$$self{lane}_1.$suffix]);
-	Utils::CMD(qq[rm $lane_path/$$self{lane}_2.$suffix]) if $self->is_paired;
+	Utils::CMD(qq[rm $lane_path/$$self{lane}_1.$suffix]) if(-e qq[$lane_path/$$self{lane}_1.$suffix]);
+	Utils::CMD(qq[rm $lane_path/$$self{lane}_2.$suffix]) if($self->is_paired && qq[$lane_path/$$self{lane}_2.$suffix]);
     }
 
     return $$self{'Yes'};
