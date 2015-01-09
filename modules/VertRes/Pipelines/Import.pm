@@ -68,7 +68,7 @@ sub new
         for my $file (@{$args{files}})
         {
             my $local_file = $file;
-            if ( !($file=~/\.bam$/i) ) { $bams_requested=0; last; }
+            if ( !($file=~/\.(b|cr)am$/i) ) { $bams_requested=0; last; }
             if ( $args{local_bam_dir} ) { $local_file = File::Spec->catfile($args{local_bam_dir}, $file); }
             if ( -s $local_file ) { $bams_local=1; last; }
         }
