@@ -50,7 +50,7 @@ path-help@sanger.ac.uk
 
 package VertRes::Pipelines::Import_iRODS_cram;
 use VertRes::Pipeline;
-use base qw(VertRes::Pipelines::Import);
+use base qw(VertRes::Pipelines::Import_iRODS VertRes::Pipelines::Import);
 
 use strict;
 use warnings;
@@ -103,7 +103,7 @@ our %options = (
 sub new {
     my ( $class, @args ) = @_;
 
-    my $self = $class->SUPER::new( %options, actions => $actions, @args );
+    my $self = $class->VertRes::Pipelines::Import_iRODS::new( %options, actions => $actions, @args );
     if ( defined( $self->{db} ) ) {
         $self->{vrtrack} = VRTrack::VRTrack->new( $self->{db} ) or $self->throw("Could not connect to the database\n");
     }
