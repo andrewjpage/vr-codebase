@@ -199,9 +199,15 @@ sub cram_to_fastq {
     my $fastq_base = $dirs.$filename ;
     
     my @bamtofastq_command = ( 
+      'scramble',
+      '-I',
+      'cram',
+      '-O',
+      'bam',
+      $file,
+      '|',
       'bamtofastq',
-      'collate=1',
-      'inputformat=cram',
+      'inputformat=bam',
       "F=".$filename."_1.fastq.gz",
       "O=".$filename."_1.fastq_orphan.gz",
       "F2=".$filename."_2.fastq.gz",
@@ -209,8 +215,6 @@ sub cram_to_fastq {
       "S=".$filename.".fastq.gz",
       'gz=1',
       'exclude=SECONDARY,SUPPLEMENTARY',
-      '<',
-      $file,
     );
 
     system(join(" ", @bamtofastq_command) );
