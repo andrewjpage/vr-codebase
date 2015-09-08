@@ -208,7 +208,7 @@ sub is_name_in_database {
     my $table = $class->_class_to_table;
     
     my $dbh = $vrtrack->{_dbh};
-    my $sql = qq[select ${table}_id from $table where latest=true and (name = ? or hierarchy_name = ?)];
+    my $sql = qq[select ${table}_id from $table where latest=true and name = ?];
     if ($pid) {
         $sql .= qq[ and project_id = $pid];
     }
