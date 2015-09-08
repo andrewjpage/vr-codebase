@@ -229,6 +229,49 @@ sub is_name_in_database {
 }
 
 
+=head2 is_name_only_in_database
+
+  Arg [1]    : sample name
+  Arg [2]    : hierarchy name
+  Arg [3]    : project id (optional)
+  Example    : if(VRTrack::Sample->is_name_in_database($vrtrack, $name, $hname, $project_id)
+  Description: Class method. Checks to see if a name (but not the hierarchy name) is already used in the sample table.
+               Overrides Core_obj method.
+  Returntype : boolean
+
+=cut
+
+sub is_name_only_in_database {
+    my ($class, $vrtrack, $name, $hname, $pid) = @_;
+    confess "Need to call with a vrtrack handle, name, hierarchy name" unless ($vrtrack && $name && $hname);
+    if ($vrtrack->isa('DBI::db')) {
+        confess "The interface has changed, expected vrtrack reference.\n";
+    }
+    
+    my $table = $class->_class_to_table;
+    
+    my $dbh = $vrtrack->{_dbh};
+    my $sql = qq[select ${table}_id from $table where latest=true and name = ? ];
+    if ($pid) {
+        $sql .= qq[ and project_id = $pid];
+    }
+    my $sth = $dbh->prepare($sql);
+    
+    my $already_used = 0;
+    if ($sth->execute($name)) {
+        my $data = $sth->fetchrow_hashref;
+        if ($data) {
+            $already_used = 1;
+        }
+    }
+    else {
+        confess "Cannot retrieve $table by $name: ".$DBI::errstr;
+    }
+    
+    return $already_used;
+}
+
+
 ###############################################################################
 # Object methods
 ###############################################################################
