@@ -89,7 +89,7 @@ sub new {
 
 sub pacbio_assembly_provides {
     my ($self) = @_;
-    return [$self->{lane_path}."/pacbio_assembly/contigs.fa", $self->{lane_path}."/".$self->{prefix}."pacbio_assembly_done"];
+    return [$self->{lane_path}."/pacbio_assembly/contigs.fa", $self->{lane_path}."/".$self->{prefix}."hgap_pacbio_assembly_done"];
 }
 
 sub pacbio_assembly_requires {
