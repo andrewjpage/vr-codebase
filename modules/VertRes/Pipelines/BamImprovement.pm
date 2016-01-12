@@ -1558,7 +1558,7 @@ sub update_db {
     $vrlane->update() || $self->throw("Unable to set improved status on lane $lane_path");
     
     $vrtrack->transaction_commit();
-    
+    $self->update_file_permissions($lane_path,$vrlane);
     return $self->{Yes};
 }
 
@@ -1626,7 +1626,6 @@ sub cleanup {
     }
     
     unlink($self->{fsu}->catfile($lane_path, 'GATK_Error.log'));
-    $self->update_file_permissions($lane_path);
     return $self->{Yes};
 }
 

@@ -1096,7 +1096,7 @@ sub update_db
             rename($sample_dir,"$sample_dir.$mapstats_id");
         }
     }
-    $self->update_file_permissions($lane_path);
+		$self->update_file_permissions($lane_path,$vrlane);
     return $$self{'Yes'};
 }
 

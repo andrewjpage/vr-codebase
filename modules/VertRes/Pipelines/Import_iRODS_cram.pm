@@ -418,7 +418,7 @@ sub update_db {
     $vrlane->raw_bases($rawbases);
     $vrlane->update();
     $vrtrack->transaction_commit();
-	$self->update_file_permissions($lane_path);
+		$self->update_file_permissions($lane_path,$vrlane);
     return $$self{Yes};
 }
 

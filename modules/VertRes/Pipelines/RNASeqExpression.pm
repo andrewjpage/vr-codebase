@@ -463,7 +463,7 @@ sub cleanup {
   }
   
   Utils::CMD("touch ".$self->{fsu}->catfile($lane_path,$prefix."rna_seq_cleanup_done")   );  
-  $self->update_file_permissions($lane_path);
+  $self->update_file_permissions($lane_path,$vrlane);
   return $self->{Yes};
 }
 

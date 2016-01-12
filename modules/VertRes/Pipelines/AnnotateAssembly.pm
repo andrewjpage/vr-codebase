@@ -302,7 +302,7 @@ sub update_db {
       $vrlane->update() || $self->throw("Unable to set annotated status on lane $lane_path");
       $vrtrack->transaction_commit();
     }
-
+    $self->update_file_permissions($lane_path,$vrlane);
     
     my $job_status =  File::Spec->catfile($lane_path, $self->{prefix} . 'job_status');
     Utils::CMD("rm $job_status") if (-e $job_status);
@@ -367,7 +367,6 @@ sub cleanup {
       }
   }
   Utils::CMD("touch ".$self->{fsu}->catfile($lane_path,"$self->{prefix}annotate_cleanup_done")   );  
-  $self->update_file_permissions($lane_path);
   return $self->{Yes};
 }
 

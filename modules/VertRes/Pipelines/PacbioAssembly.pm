@@ -293,7 +293,7 @@ sub update_db {
     }
     
     Utils::CMD("touch ".$self->{fsu}->catfile($lane_path,"$self->{prefix}pacbio_assembly_update_db_done")   );  
-    $self->update_file_permissions($lane_path);
+    $self->update_file_permissions($lane_path,$vrlane);
     return $$self{'Yes'};
 }
 

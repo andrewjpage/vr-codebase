@@ -1603,7 +1603,6 @@ sub cleanup {
     my $file_list = File::Spec->catfile($lane_path, 'file.list');
     Utils::CMD("rm $file_list") if (-e $file_list);
     Utils::CMD("touch " . File::Spec->catfile($lane_path, '.snps_done'));
-	$self->update_file_permissions($lane_path);
     return $$self{'Yes'};
 }
 
@@ -1675,7 +1674,7 @@ sub update_db {
         my $job_status =  File::Spec->catfile($lane_path, $self->{prefix} . 'job_status');
         Utils::CMD("rm $job_status") if (-e $job_status);
     }
-
+    $self->update_file_permissions($lane_path,$vrlane);
     return $$self{'Yes'};
 }
 
