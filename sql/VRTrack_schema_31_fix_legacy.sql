@@ -35,3 +35,4 @@ ALTER TABLE submission MODIFY date DATETIME DEFAULT CURRENT_TIMESTAMP;
 ALTER TABLE submission MODIFY COLUMN name varchar(255) NOT NULL DEFAULT '';
 ALTER TABLE library_multiplex_pool MODIFY COLUMN library_id int(10) unsigned NOT NULL DEFAULT '0';
 ALTER TABLE library MODIFY COLUMN library_id int(10) unsigned NOT NULL DEFAULT '0';
+
