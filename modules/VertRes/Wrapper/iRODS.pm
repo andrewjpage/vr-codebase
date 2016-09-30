@@ -182,9 +182,10 @@ sub get_file_md5 {
     my $cmd = join "/",($self->{icommands},"ichksum $file");
 
     open(my $irods_md5_fh, '-|', $cmd);
-    my $md5 = <$irods_md5_fh>;
+    my $md5_raw = <$irods_md5_fh>;
+    my @md5_details = split(/[\s\t]+/,$md5_raw);
+    my $md5 = @md5_details[0];
     chomp $md5;
-    $md5 =~s/.*\s//;
     return $md5;
 }
 
