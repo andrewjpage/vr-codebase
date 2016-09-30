@@ -184,7 +184,7 @@ sub get_file_md5 {
     open(my $irods_md5_fh, '-|', $cmd);
     my $md5_raw = <$irods_md5_fh>;
     my @md5_details = split(/[\s\t]+/,$md5_raw);
-    my $md5 = @md5_details[0];
+    my $md5 = $md5_details[0];
     chomp $md5;
     return $md5;
 }
