@@ -1445,6 +1445,9 @@ sub store_lane {
     
     $vrtrack->transaction_commit();
     
+    # cleanup the job files (perl script, output and error files)
+    Utils::CMD("rm -f $storage_path/_store_nfs.*");
+    
     return 1;
 }
 

@@ -381,11 +381,15 @@ sub update_db {
     $self->update_db_master($lane_path,$lock_file,$vrtrack);
     # remove job files
     foreach my $file (qw(import_files convert_to_fastq )) {
-        foreach my $suffix (qw(o e pl)) {
+        foreach my $suffix (qw(o e pl o.previous e.previous )) {
             unlink( $self->{fsu}->catfile( $lane_path, $prefix . $file . '.' . $suffix ) );
         }
     }
     
+    if(-e $self->{fsu}->catfile( $lane_path, $prefix . 'cram_to_fastq_done' ))
+    {
+      unlink( $self->{fsu}->catfile( $lane_path, $prefix . 'cram_to_fastq_done' ) );
+    }
       # Remove Large Files
       my @cram_suffix   = ('cram','cram.md5');
 
@@ -418,7 +422,7 @@ sub update_db {
     $vrlane->raw_bases($rawbases);
     $vrlane->update();
     $vrtrack->transaction_commit();
-	$self->update_file_permissions($lane_path);
+    $self->update_file_permissions($lane_path);
     return $$self{Yes};
 }
 

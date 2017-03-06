@@ -441,14 +441,7 @@ sub unlock_file
     close($lock_fh) or confess "close $lock_fh: $!";
 }
 
-# For a given bsub job name (arg 3 to VertRes::LSF::run), if the bsub o/e files exist
-# they will be moved to .previous files. If a .previous file exists, its
-# content will be moved to an .archive file. Returns the abs path to the
-# .previous error file so you can parse it for errors before proceeding.
-#
-# With extra option set to true, will move all data from any existing current
-# or previous bsub file to the .archive file: for use when an action completed
-# successfully and you want to tidy up
+# Delete old output files
 sub archive_bsub_files {
     my ($self, $lane_path, $job_name, $final) = @_;
     
@@ -458,26 +451,10 @@ sub archive_bsub_files {
         my $previous_bsub_file = $bsub_file.'.previous';
         my $archive_bsub_file = File::Spec->catfile($lane_path, '.'.$job_name.'.'.$suffix.'.archive');
         
-        if (-s $bsub_file) {
-            # don't archive files greater than 1GB
-            if (-e $previous_bsub_file && -s $previous_bsub_file < 1000000000) {
-                $self->_move_file_content($previous_bsub_file, $archive_bsub_file);
-            }
-            else {
-                unlink($previous_bsub_file);
-            }
-            
-            move($bsub_file, $previous_bsub_file) || $self->throw("Couldn't move $bsub_file to $previous_bsub_file");
-        }
-        
-        if ($final) {
-            # don't archive files greater than 1GB
-            if (-e $previous_bsub_file && -s $previous_bsub_file < 1000000000) {
-                $self->_move_file_content($previous_bsub_file, $archive_bsub_file);
-            }
-            else {
-                unlink($previous_bsub_file);
-            }
+        if (-s $bsub_file || $final) {
+	    unlink($bsub_file);
+            unlink($previous_bsub_file);
+	    unlink($archive_bsub_file);
         }
         
         if ($suffix eq 'e' && -s $previous_bsub_file) {

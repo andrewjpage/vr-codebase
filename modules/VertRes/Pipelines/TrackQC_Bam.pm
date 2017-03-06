@@ -1071,10 +1071,14 @@ sub update_db
 
     $vrtrack->transaction_commit();
 
-    # Clean the big files
-    for my $file ('gc-depth.bindepth',"$$self{lane}.bam.bai","$$self{lane}*.sai","$$self{lane}*.fastq.gz","$$self{lane}.bam","$$self{lane}.glf")
+    # Clean the files
+    for my $file ('gc-depth.bindepth', "$$self{lane}.bam.bai", "$$self{lane}*.sai", "$$self{lane}*.fastq.gz", "$$self{lane}.bam", "$$self{lane}.glf", "$$self{lane}*.nadapters", $$self{prefix}.$$self{lane}."*", $$self{prefix}."aln_fastq_*", $$self{prefix}."blat_fastq_*", $$self{prefix}."graphs.*", $$self{prefix}."heterozygous_snps.*", $$self{prefix}."map.pl", $$self{prefix}."qc-sample.pl", "*.gp")
     {
         Utils::CMD("rm -f $sample_dir/$file");
+    }
+    
+    foreach my $file (qw(.pl .e .o .e.previous .o.previous _done)) {
+        unlink( $self->{fsu}->catfile( $lane_path, $prefix . 'assign_taxonomy' . $suffix ) );
     }
 
     if ( $$self{clean_fastqs} )
