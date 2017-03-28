@@ -138,30 +138,6 @@ sub setup_custom_reference_index {
 sub setup_fastqs {
     my ($self, $ref, @fqs) = @_;
     
-    foreach my $fq (@fqs) {
-        if ($fq =~ /\.gz$/) {
-            my $fq_new = $fq;
-            $fq_new =~ s/\.gz$//;
-            
-            unless (-s $fq_new) {
-		system("gunzip -c ".$fq." > ".$fq_new.".tmp");
-                
-		# Check the number of lines in the files
-		my $lines = `gunzip -c $fq | wc -l `;
-		my $actual_lines = `cat $fq_new.tmp | wc -l`;
-                chomp($lines);
-                chomp($actual_lines);
-		
-                if ($actual_lines == $lines) {
-                    move("$fq_new.tmp", $fq_new);
-                }
-                else {
-                    $self->throw("Made $fq_new.tmp, but it only had $actual_lines instead of $lines lines");
-                }
-            }
-        }
-    }
-    
     return 1;
 }
 
@@ -212,11 +188,6 @@ sub generate_sam {
         else {
             $self->setup_custom_reference_index($ref,'-k 13 -s 6','medium');
             $hash_name = $ref.'.medium';
-        }
-        
-        foreach my $fq ($fq1, $fq2) {
-            $fq || next;
-            $fq =~ s/\.gz$//;
         }
         
         my $insert_size_arg = '';
