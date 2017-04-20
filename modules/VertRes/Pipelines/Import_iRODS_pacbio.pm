@@ -92,7 +92,8 @@ our $actions = [
 ];
 our %options = (
     bsub_opts  => '',
-    bash5tools => '/nfs/srpipe_data/smrtanalysis/install/smrtanalysis-2.2.0.133377/analysis/bin/bash5tools.py'
+    bash5tools => '/nfs/srpipe_data/smrtanalysis/install/smrtanalysis-2.2.0.133377/analysis/bin/bash5tools.py',
+    pythonpath_extra => '/software/pathogen/external/lib/python2.7/site-packages',
 );
 
 sub new {
@@ -188,7 +189,9 @@ sub convert_cells_to_fastq {
         my ( $filename, $dirs, $suffix ) = fileparse( $bas_file, '.bas.h5' );
         my $fastq = $filename . '.fastq';
         next if ( -e $fastq.'.gz');
-        system( $self->{bash5tools} . " --outType fastq " . $bas_file );
+	
+	my $prepend_python_path = "PYTHONPATH=".$self->{pythonpath_extra}.":$PYTHONPATH ";
+        system( $prepend_python_path. $self->{bash5tools} . " --outType fastq " . $bas_file );
         Utils::CMD(qq[gzip -9 $fastq]);
         my $fastqcheck = VertRes::Wrapper::fastqcheck->new();
         $fastqcheck->run( $fastq . '.gz', $fastq . '.gz.fastqcheck' );
