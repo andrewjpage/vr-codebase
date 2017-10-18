@@ -1076,11 +1076,56 @@ sub update_db
     for my $file ('gc-depth.bindepth', "$$self{lane}.bam.bai", "$$self{lane}_1.sai","$$self{lane}_2.sai",  "$$self{lane}_1.fastq.gz","$$self{lane}_2.fastq.gz", "$$self{lane}.bam", "$$self{lane}.glf")
     {
         if(-e "$sample_dir/$file")
-	{
-		Utils::CMD("rm -f $sample_dir/$file");
-		# Leave a placeholder empty file so that when you run multiple bjobs in one run-pipeline it doesnt keep looping over.
-		Utils::CMD("touch $sample_dir/$file");
-	}
+	    {
+		  Utils::CMD("rm -f $sample_dir/$file");
+		  # Leave a placeholder empty file so that when you run multiple bjobs in one run-pipeline it doesnt keep looping over.
+		  Utils::CMD("touch $sample_dir/$file");
+	    }
+    }
+	
+	# clean small files
+    for my $file ("_$$self{lane}_1.e",
+                  "_$$self{lane}_1.o",
+                  "_$$self{lane}_2.e",
+                  "_$$self{lane}_2.o",
+                  "_$$self{lane}_a1.e",
+                  "_$$self{lane}_a1.o",
+                  "_$$self{lane}_a2.e",
+                  "_$$self{lane}_a2.o",
+                  "_$$self{lane}_graphs.e",
+                  "_$$self{lane}_graphs.o",
+                  "_$$self{lane}_sampe.e",
+                  "_$$self{lane}_sampe.o",
+                  "_$$self{lane}_sample.e",
+                  "_$$self{lane}_sample.o",
+                  "_aln_fastq_1.pl",
+                  "_aln_fastq_2.pl",
+                  "_blat_fastq_1.pl",
+                  "_blat_fastq_2.pl",
+                  "_graphs.pl",
+                  "_heterozygous_snps.e",
+                  "_heterozygous_snps.o",
+                  "_heterozygous_snps.pl",
+                  "_map.pl",
+                  "_qc-sample.pl",
+                  "acgt-cycles.gp",
+                  "adapters.fa",
+                  "coverage.gp",
+                  "gc-content.gp",
+                  "gc-depth.gp",
+                  "indel-cycles.gp",
+                  "indel-dist.gp",
+                  "insert-size.gp",
+                  "mism-per-cycle.gp",
+                  "quals-hm.gp",
+                  "quals.gp",
+                  "quals2.gp",
+                  "quals3.gp")
+    {
+        if(-e "$sample_dir/$file")
+	    {
+		  Utils::CMD("rm -f $sample_dir/$file");
+	    }
     }
 
     if ( $$self{clean_fastqs} )
