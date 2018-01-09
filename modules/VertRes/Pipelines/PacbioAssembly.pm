@@ -274,7 +274,7 @@ sub correct_reads {
 	
     my $file_regex = $self->{lane_path}."/".'*.subreads.bam';
     my @files = glob( $file_regex);
-	my $uncorrected_fastq = $self->generate_fastq_filename_from_subreads_filename(@files[0]);
+	my $uncorrected_fastq = $self->generate_fastq_filename_from_subreads_filename($files[0]);
 	
 	my $threads = $self->{threads} || 8;
 	my $memory_in_gb = 20;
