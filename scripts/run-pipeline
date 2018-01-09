@@ -206,9 +206,7 @@ sub usage
 	"   -b, --same_database_for_all     All config files refer to the same DB so reuse connection.\n",
         "   -v, --verbose                   Be verbose. (Given twice increases the verbosity level.)\n",
         "\n";
-		
-		# not working since we cleanup the done files
-		#	"   -x, --max-check-jobs            Loop over a lane this many times to check for new work (not working so hardcoded to 1).\n",
+
     exit;
 }
 
@@ -241,8 +239,6 @@ sub run_pipelines
         my $jobs = get_jobs($opts);
 
         my $check_jobs_counter = 0;
-		# This option breaks things so turn it off.
-		$$opts{max_check_jobs} = 1;
         for my $job (@$jobs)
         {
             if ( $$opts{list} )
