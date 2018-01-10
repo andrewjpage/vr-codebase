@@ -338,7 +338,7 @@ sub hgap_assembly {
 	my $resequence_output_dir = $output_dir."/resequence";
 	my $modification_output_dir = $output_dir."/modification";
     my $queue = $self->{queue}|| "normal";
-    my $pipeline_version = $self->{pipeline_version} || '8.0';
+    my $pipeline_version = '8.0';
     my $target_coverage = $self->{target_coverage} || 25;
     my $umask    = $self->umask_str;
     my $lane_name = $self->{vrlane}->name;
@@ -431,8 +431,11 @@ sub modification_requires {
     my $file_regex = $self->{lane_path}."/".'*.subreads.bam';
     my @files = glob( $file_regex);
     die 'no input BAM files' if(@files == 0);
-	push(@files, $self->{lane_path}."/".$self->{hgap_version_str}."_assembly/contigs.fa");
 	push(@files, "$self->{prefix}hgap_assembly_done");
+	
+	my $assembly_file = $self->{lane_path}."/".$self->{hgap_version_str}."_assembly/contigs.fa";
+	die 'assembly file empty' if( -z $assembly_file);
+	push(@files, $assembly_file);
     
     return \@files;
 }
